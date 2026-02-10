@@ -18,32 +18,37 @@
             position: relative;
         }
 
-        /* Background Animation Layer */
-        .bg-animation {
+        /* Fixed Background Layer */
+        .bg-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-            pointer-events: none; /* User can click through them */
+            pointer-events: none;
         }
 
-        .floating-item {
+        .flower {
             position: absolute;
-            opacity: 0.3; /* Low opacity as requested */
-            animation: floatUp linear infinite;
+            opacity: 0.3;
+            font-size: 24px;
+            animation: floatUp 15s linear infinite;
+            bottom: -50px;
         }
 
+        /* Create different paths for flowers so they don't look robotic */
         @keyframes floatUp {
-            0% { transform: translateY(110vh) rotate(0deg); }
-            100% { transform: translateY(-20vh) rotate(360deg); }
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Main Content Layer */
+        /* Main Game Content */
         .container {
             position: relative;
-            z-index: 10; /* Above the background */
+            z-index: 10;
             width: 100%;
             max-width: 500px;
         }
@@ -52,7 +57,6 @@
             font-size: 100px;
             display: block;
             margin-bottom: 20px;
-            transition: all 0.3s ease;
         }
 
         h1 {
@@ -83,15 +87,13 @@
         #yes-btn {
             background-color: #b2e4b3;
             color: #2e5c2f;
-            position: relative;
-            z-index: 11; 
+            z-index: 11;
         }
 
         #no-btn {
             background-color: #f1a7c1;
             color: #7a2e45;
-            position: relative;
-            z-index: 9999; /* Always on top */
+            z-index: 9999; /* Locked on top */
         }
 
         .success-view {
@@ -104,7 +106,8 @@
 </head>
 <body>
 
-    <div class="bg-animation" id="bg-layer"></div>
+    <div class="bg-container" id="bg-flowers">
+        </div>
 
     <div class="container" id="main-ui">
         <div id="character-emoji">😊</div>
@@ -118,7 +121,7 @@
 
     <div class="success-view" id="success-ui">
         <div style="font-size: 120px;">🥰</div>
-        <h1 style="color: #d63384; font-size: 3rem; margin-bottom: 10px;">YEAHHH LET'S GOOO!</h1>
+        <h1 style="color: #d63384; font-size: 3rem; margin-bottom: 10px;">YEAHHH LET'S GOOO! ❤️</h1>
         <p style="font-size: 1.5rem; color: #7a2e45;">I never doubted you for a second! 😘</p>
     </div>
 
@@ -129,7 +132,7 @@
         const emoji = document.getElementById('character-emoji');
         const mainUi = document.getElementById('main-ui');
         const successUi = document.getElementById('success-ui');
-        const bgLayer = document.getElementById('bg-layer');
+        const bgContainer = document.getElementById('bg-flowers');
 
         let yesScale = 1;
         let noScale = 1;
@@ -147,35 +150,41 @@
         ];
 
         const sadEmojis = ["😟", "🥺", "😭", "😠", "😿", "☹️"];
-        const floatingItems = ["🌸", "❤️", "🌹", "✨", "💖"];
+        const flowerIcons = ["🌸", "❤️", "🌹", "✨", "💖"];
 
-        // Create the background drifting items
-        function createFloatingBg() {
-            for (let i = 0; i < 15; i++) {
-                const item = document.createElement('div');
-                item.classList.add('floating-item');
-                item.innerText = floatingItems[Math.floor(Math.random() * floatingItems.length)];
-                item.style.left = Math.random() * 100 + 'vw';
-                item.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                item.style.animationDuration = (Math.random() * 5 + 10) + 's';
-                item.style.animationDelay = (Math.random() * 10) + 's';
-                bgLayer.appendChild(item);
+        // Fixed Flower Generation
+        function initFlowers() {
+            for (let i = 0; i < 20; i++) {
+                const flower = document.createElement('div');
+                flower.classList.add('flower');
+                flower.innerText = flowerIcons[Math.floor(Math.random() * flowerIcons.length)];
+                
+                // Randomize horizontal start
+                flower.style.left = Math.random() * 100 + 'vw';
+                
+                // Randomize animation speed
+                const duration = Math.random() * 5 + 10;
+                flower.style.animationDuration = duration + 's';
+                
+                // OFFSET: This makes them start at different heights so they aren't static
+                flower.style.animationDelay = -(Math.random() * duration) + 's';
+                
+                bgContainer.appendChild(flower);
             }
         }
-        createFloatingBg();
+        initFlowers();
 
         noBtn.addEventListener('click', () => {
             clickCount++;
             questionText.innerText = messages[Math.min(clickCount, messages.length - 1)];
             emoji.innerText = sadEmojis[Math.min(clickCount - 1, sadEmojis.length - 1)];
 
-            // Growing/Shrinking
             yesScale += 0.4;
             yesBtn.style.transform = `scale(${yesScale})`;
-            noScale = Math.max(0.01, noScale - 0.12); // Steady shrink without flipping
+            
+            noScale = Math.max(0.01, noScale - 0.12);
             noBtn.style.transform = `scale(${noScale})`;
 
-            // Random Movement within viewport
             noBtn.style.position = 'fixed';
             const padding = 60;
             const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
@@ -189,9 +198,6 @@
             mainUi.style.display = 'none';
             successUi.style.display = 'flex';
             document.body.style.backgroundColor = "#fff";
-            // Make background items more visible on success
-            const items = document.querySelectorAll('.floating-item');
-            items.forEach(item => item.style.opacity = "0.6");
         });
     </script>
 </body>
