@@ -116,8 +116,8 @@
             "Don't do this to me... 💔",
             "I'm gonna cry! 0_0",
             "You're heartless! 😂",
-            "It's getting harder to click, isn't it?",
-            "Just give up and say yes! ✨"
+            "It's getting tiny! Catch it!",
+            "Almost gone... just click YES! ✨"
         ];
 
         noBtn.addEventListener('click', () => {
@@ -127,17 +127,18 @@
             if (clickCount < messages.length) {
                 questionText.innerText = messages[clickCount];
             } else {
-                questionText.innerText = "Okay, now you're just being mean! 😤";
+                questionText.innerText = "Okay, it's basically a grain of sand now. 😤";
             }
 
             // 2. Change image
             characterImg.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif";
 
-            // 3. Grow Yes / Shrink No (No limit)
+            // 3. Grow Yes / Shrink No
             yesScale += 0.4;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            noScale -= 0.15; // Shrinks faster now
+            // FIX: Ensure noScale never goes below 0.05 so it doesn't flip/get bigger
+            noScale = Math.max(0.05, noScale - 0.15); 
             noBtn.style.transform = `scale(${noScale})`;
 
             // 4. Move No button randomly
@@ -147,7 +148,6 @@
             const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
             const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
 
-            // Math.max(0, ...) ensures it doesn't go off the top/left if screen is small
             const randomX = Math.max(0, Math.floor(Math.random() * maxWidth));
             const randomY = Math.max(0, Math.floor(Math.random() * maxHeight));
 
