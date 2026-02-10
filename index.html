@@ -13,84 +13,94 @@
             height: 100vh;
             background-color: #ffe0e9;
             font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            margin: 0;
             text-align: center;
         }
-        #container { position: relative; width: 100%; max-width: 600px; }
-        #character { width: 200px; height: 200px; margin-bottom: 20px; border-radius: 20px; }
-        h1 { color: #d63384; }
-        .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px; }
+        #character { width: 220px; height: 220px; margin-bottom: 10px; border-radius: 20px; }
+        h1 { color: #d63384; margin-bottom: 30px; }
+        
+        .buttons-container { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 25px; /* Spacing between buttons */
+            height: 100px; 
+            width: 100%;
+            position: relative; 
+        }
         
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 35px;
+            font-size: 1.3rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
+            font-weight: bold;
             transition: transform 0.2s ease;
         }
 
-        #yesBtn { background-color: #4caf50; color: white; }
-        #noBtn { background-color: #f44336; color: white; position: absolute; }
+        #yesBtn { background-color: #ff4d6d; color: white; z-index: 10; }
+        #noBtn { background-color: #888; color: white; transition: none; }
     </style>
 </head>
 <body>
 
-    <div id="container">
-        <img id="character" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute character">
-        <h1 id="question">Will you be my Valentine? 💖</h1>
-        
-        <div class="buttons">
-            <button id="yesBtn">Yes</button>
-            <button id="noBtn">No</button>
-        </div>
+    <img id="character" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute character">
+    <h1 id="question">Will you be my Valentine? 💖</h1>
+    
+    <div class="buttons-container">
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
     </div>
 
     <script>
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const character = document.getElementById('character');
-        const question = document.getElementById('question');
 
         let noCount = 0;
-        let yesSize = 1;
-        let noScale = 1;
+        let yesScale = 1;
 
-        // Gifs for different states
         const sadGifs = [
             "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif",
             "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif"
         ];
         const happyGif = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif";
 
-        noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('click', moveButton);
-
-        function moveButton() {
+        noBtn.addEventListener('click', () => {
             noCount++;
             
-            // Move No button to a random spot
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            // 1. Make the "No" button move to a random position
+            // After the first click, it becomes absolute so it can fly anywhere
+            noBtn.style.position = 'absolute';
+            
+            // Ensure it stays within the visible screen area
+            const padding = 50;
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+            
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
 
-            // Change UI scale
-            yesSize += 0.2;
-            noScale -= 0.1;
-            yesBtn.style.transform = `scale(${yesSize})`;
-            if (noScale > 0.3) noBtn.style.transform = `scale(${noScale})`;
+            // 2. Shrink No, Grow Yes
+            yesScale += 0.3;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            
+            let currentNoScale = 1 - (noCount * 0.1);
+            if (currentNoScale > 0.2) {
+                noBtn.style.transform = `scale(${currentNoScale})`;
+            }
 
-            // Change Character to sad
-            character.src = sadGifs[Math.floor(Math.random() * sadGifs.length)];
-        }
+            // 3. Update Character to sad version
+            character.src = sadGifs[noCount % sadGifs.length];
+        });
 
         yesBtn.addEventListener('click', () => {
             document.body.innerHTML = `
                 <div style="text-align:center;">
                     <img src="${happyGif}" style="width:300px; border-radius:20px;">
-                    <h1 style="color:#d63384; font-size: 3rem;">YEAHHH LET'S GOOO! 🥳</h1>
-                    <p>I knew you couldn't resist!</p>
+                    <h1 style="color:#d63384; font-size: 3rem;">YAAAY! I KNEW IT! ❤️</h1>
+                    <p style="font-size: 1.5rem;">Best Valentine ever!</p>
                 </div>
             `;
             document.body.style.backgroundColor = "#fff";
