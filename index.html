@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Be My Valentine?</title>
     <style>
         body {
@@ -14,97 +14,36 @@
             background-color: #ffe0e9;
             font-family: 'Arial', sans-serif;
             margin: 0;
-            text-align: center;
+            overflow: hidden; /* Strictly no scrolling */
+            position: relative;
         }
-        #character { width: 220px; height: 220px; margin-bottom: 10px; border-radius: 20px; }
-        h1 { color: #d63384; margin-bottom: 30px; }
+        #character { width: 180px; height: 180px; margin-bottom: 10px; border-radius: 20px; object-fit: contain; }
+        h1 { color: #d63384; margin: 20px; text-align: center; font-size: 1.8rem; }
         
         .buttons-container { 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            gap: 25px; /* Spacing between buttons */
-            height: 100px; 
+            gap: 20px; 
             width: 100%;
-            position: relative; 
+            height: 60px;
         }
         
         button {
-            padding: 15px 35px;
-            font-size: 1.3rem;
+            padding: 12px 25px;
+            font-size: 1.1rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             transition: transform 0.2s ease;
+            white-space: nowrap;
         }
 
-        #yesBtn { background-color: #b2e4b3; color: white; z-index: 10; }
-        #noBtn { background-color: #f1a7c1; color: white; transition: none; }
+        #yesBtn { background-color: #ff4d6d; color: white; position: relative; z-index: 100; }
+        #noBtn { background-color: #888; color: white; position: relative; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <img id="character" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute character">
-    <h1 id="question">Will you be my Valentine? 💖</h1>
-    
-    <div class="buttons-container">
-        <button id="yesBtn">Yes</button>
-        <button id="noBtn">No</button>
-    </div>
-
-    <script>
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.getElementById('yesBtn');
-        const character = document.getElementById('character');
-
-        let noCount = 0;
-        let yesScale = 1;
-
-        const sadGifs = [
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif"
-        ];
-        const happyGif = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif";
-
-        noBtn.addEventListener('click', () => {
-            noCount++;
-            
-            // 1. Make the "No" button move to a random position
-            // After the first click, it becomes absolute so it can fly anywhere
-            noBtn.style.position = 'absolute';
-            
-            // Ensure it stays within the visible screen area
-            const padding = 50;
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
-            
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-
-            // 2. Shrink No, Grow Yes
-            yesScale += 0.3;
-            yesBtn.style.transform = `scale(${yesScale})`;
-            
-            let currentNoScale = 1 - (noCount * 0.1);
-            if (currentNoScale > 0.2) {
-                noBtn.style.transform = `scale(${currentNoScale})`;
-            }
-
-            // 3. Update Character to sad version
-            character.src = sadGifs[noCount % sadGifs.length];
-        });
-
-        yesBtn.addEventListener('click', () => {
-            document.body.innerHTML = `
-                <div style="text-align:center;">
-                    <img src="${happyGif}" style="width:300px; border-radius:20px;">
-                    <h1 style="color:#d63384; font-size: 3rem;">YAAAY! I KNEW IT! ❤️</h1>
-                    <p style="font-size: 1.5rem;">Best Valentine ever!</p>
-                </div>
-            `;
-            document.body.style.backgroundColor = "#fff";
-        });
-    </script>
-</body>
-</html>
+    <img id="character" src="
