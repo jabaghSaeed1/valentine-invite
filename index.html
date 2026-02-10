@@ -11,28 +11,30 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #fdf2f8; /* Light pink background */
+            background-color: #fdf2f8;
             font-family: 'Arial', sans-serif;
-            overflow: hidden; /* Prevents scrolling */
+            overflow: hidden; /* Prevents scrollbars */
         }
 
         .container {
             text-align: center;
             position: relative;
             width: 100%;
+            max-width: 500px;
         }
 
         h1 {
             color: #d63384;
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 20px;
+            padding: 0 15px;
         }
 
         #character-img {
             width: 200px;
             height: 200px;
-            object-fit: cover;
-            border-radius: 15px;
+            object-fit: contain;
+            border-radius: 20px;
             margin-bottom: 20px;
         }
 
@@ -40,52 +42,45 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 30px; /* Spacing between buttons */
-            height: 60px; /* Reserve height so layout doesn't jump */
+            gap: 20px;
+            height: 100px;
         }
 
         .btn {
-            padding: 15px 40px;
+            padding: 15px 30px;
             font-size: 1.2rem;
             border: none;
-            border-radius: 30px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s ease;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
         }
 
-        /* User Specified Colors */
+        /* Your Specific Colors */
         #yes-btn {
-            background-color: #b2e4b3; /* Greenish */
-            color: #2e5c2f; /* Darker green text for readability */
+            background-color: #b2e4b3;
+            color: #2e5c2f;
+            z-index: 999; /* Keeps Yes button on top */
         }
 
         #no-btn {
-            background-color: #f1a7c1; /* Pinkish */
-            color: #7a2e45; /* Darker pink text for readability */
+            background-color: #f1a7c1;
+            color: #7a2e45;
+            position: relative;
         }
 
-        /* Success Message Styling */
-        .success-message {
+        .success-view {
             display: none;
             flex-direction: column;
             align-items: center;
-            animation: popIn 0.5s ease;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="main-container">
-        <img id="character-img" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute Bear">
-        <h1 id="question-text">Will you be my Valentine?</h1>
+    <div class="container" id="main-ui">
+        <img id="character-img" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif">
+        <h1 id="question">Will you be my Valentine?</h1>
         
         <div class="btn-container">
             <button class="btn" id="yes-btn">Yes</button>
@@ -93,87 +88,55 @@
         </div>
     </div>
 
-    <div class="success-message" id="success-container">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif" alt="Happy Bear" style="width: 300px; border-radius: 20px;">
-        <h1 style="color: #d63384; font-size: 3rem; margin-top: 20px;">YEAHHH LET'S GOOO! ❤️</h1>
+    <div class="success-view" id="success-ui">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif" style="width: 280px; border-radius: 20px;">
+        <h1 style="color: #d63384; font-size: 3rem; margin-bottom: 10px;">YEAHHH LET'S GOOO! ❤️</h1>
+        <p style="font-size: 1.5rem; color: #7a2e45;">I never doubted you for a second! 😘</p>
     </div>
 
     <script>
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
-        const questionText = document.getElementById('question-text');
         const characterImg = document.getElementById('character-img');
-        const mainContainer = document.getElementById('main-container');
-        const successContainer = document.getElementById('success-container');
+        const mainUi = document.getElementById('main-ui');
+        const successUi = document.getElementById('success-ui');
 
-        // State variables
-        let clickCount = 0;
         let yesScale = 1;
         let noScale = 1;
 
-        // Arrays for dynamic content
-        const sadGifs = [
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif"
-        ];
-
-        const rejectMessages = [
-            "No?",
-            "Are you sure?",
-            "Really sure?",
-            "Pookie please...",
-            "Just think about it!",
-            "If you say no, I will be very sad...",
-            "I will be very very very sad...",
-            "Ok fine, I will stop asking...",
-            "Just kidding, say yes please! ❤️"
-        ];
-
-        // LOGIC FOR NO BUTTON
         noBtn.addEventListener('click', () => {
-            clickCount++;
-            
-            // 1. Change Text
-            if (clickCount < rejectMessages.length) {
-                noBtn.innerText = rejectMessages[clickCount];
+            // 1. Change to sad image
+            characterImg.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif";
+
+            // 2. Grow Yes, Shrink No (with a limit)
+            yesScale += 0.3;
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            if (noScale > 0.6) { // Won't shrink smaller than 60% of original size
+                noScale -= 0.1;
+                noBtn.style.transform = `scale(${noScale})`;
             }
 
-            // 2. Change Image to Sad
-            characterImg.src = sadGifs[clickCount % sadGifs.length];
-
-            // 3. Scale Buttons
-            yesScale += 0.2; // Yes grows
-            noScale -= 0.1;  // No shrinks
+            // 3. Move No button randomly within viewport
+            noBtn.style.position = 'fixed';
             
-            yesBtn.style.transform = `scale(${yesScale})`;
-            
-            // Prevent No button from disappearing completely (stop at 0.5 scale)
-            if (noScale < 0.5) noScale = 0.5;
-            noBtn.style.transform = `scale(${noScale})`;
+            // Subtract button dimensions and some padding so it never hits the absolute edge
+            const padding = 20;
+            const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
 
-            // 4. Move Button Randomly (The "Trap")
-            // Make position absolute so it breaks out of the row
-            noBtn.style.position = "absolute";
-            
-            // Calculate available screen space (viewport) - button dimensions
-            const maxX = window.innerWidth - noBtn.offsetWidth;
-            const maxY = window.innerHeight - noBtn.offsetHeight;
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
 
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
-
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
         });
 
-        // LOGIC FOR YES BUTTON
         yesBtn.addEventListener('click', () => {
-            // Hide the game container
-            mainContainer.style.display = "none";
-            // Show the success message
-            successContainer.style.display = "flex";
+            mainUi.style.display = 'none';
+            successUi.style.display = 'flex';
+            document.body.style.backgroundColor = "#fff";
         });
-
     </script>
 </body>
 </html>
