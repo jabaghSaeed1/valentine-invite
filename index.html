@@ -23,7 +23,6 @@
             max-width: 500px;
         }
 
-        /* Using a Large Emoji instead of a GIF to prevent "Content Not Available" */
         #character-emoji {
             font-size: 100px;
             display: block;
@@ -57,35 +56,23 @@
         }
 
         #yes-btn {
-            background-color: #b2e4b3;
+            background-color: #b2e4b3; /* Specified Green */
             color: #2e5c2f;
             position: relative;
             z-index: 1; 
         }
 
         #no-btn {
-            background-color: #f1a7c1;
+            background-color: #f1a7c1; /* Specified Pink */
             color: #7a2e45;
             position: relative;
-            z-index: 9999;
+            z-index: 9999; /* Always stays on top */
         }
 
         .success-view {
             display: none;
             flex-direction: column;
             align-items: center;
-        }
-
-        .floating-heart {
-            position: absolute;
-            color: #ff4d6d;
-            font-size: 20px;
-            animation: float 3s linear infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) opacity(1); }
-            100% { transform: translateY(-100vh) opacity(0); }
         }
     </style>
 </head>
@@ -103,7 +90,7 @@
 
     <div class="success-view" id="success-ui">
         <div style="font-size: 120px;">🥰</div>
-        <h1 style="color: #d63384; font-size: 3rem; margin-bottom: 10px;">YEAHHH LET'S GOOO! ❤️</h1>
+        <h1 style="color: #d63384; font-size: 3rem; margin-bottom: 10px;">YEAHHH LET'S GOOO!</h1>
         <p style="font-size: 1.5rem; color: #7a2e45;">I never doubted you for a second! 😘</p>
     </div>
 
@@ -130,23 +117,23 @@
             "Almost gone... just click YES! ✨"
         ];
 
-        const sadEmojis = ["😟", "🥺", "😭", "💔", "😿", "🥀"];
+        const sadEmojis = ["😟", "🥺", "😭", "😠", "😿", "☹️"];
 
         noBtn.addEventListener('click', () => {
             clickCount++;
 
-            // 1. Update text
+            // 1. Text guilt-trip
             questionText.innerText = messages[Math.min(clickCount, messages.length - 1)];
 
-            // 2. Change Emoji (No more broken links!)
+            // 2. Change Emoji to sadder states
             emoji.innerText = sadEmojis[Math.min(clickCount - 1, sadEmojis.length - 1)];
 
-            // 3. Scale logic
+            // 3. Scaling logic
             yesScale += 0.4;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            // Corrected shrinking logic to prevent flipping
-            noScale = Math.max(0.05, noScale - 0.15); 
+            // Infinite shrink without flipping
+            noScale = Math.max(0.01, noScale - 0.15); 
             noBtn.style.transform = `scale(${noScale})`;
 
             // 4. Move No button
@@ -163,22 +150,7 @@
             mainUi.style.display = 'none';
             successUi.style.display = 'flex';
             document.body.style.backgroundColor = "#fff";
-            
-            // Bonus: Simple Heart Rain
-            for(let i=0; i<20; i++) {
-                createHeart();
-            }
         });
-
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('floating-heart');
-            heart.innerText = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }
     </script>
 </body>
 </html>
