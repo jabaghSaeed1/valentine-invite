@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #ffe0e9;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+        #container { position: relative; width: 100%; max-width: 600px; }
+        #character { width: 200px; height: 200px; margin-bottom: 20px; border-radius: 20px; }
+        h1 { color: #d63384; }
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px; }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        #yesBtn { background-color: #4caf50; color: white; }
+        #noBtn { background-color: #f44336; color: white; position: absolute; }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <img id="character" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute character">
+        <h1 id="question">Will you be my Valentine? 💖</h1>
+        
+        <div class="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const character = document.getElementById('character');
+        const question = document.getElementById('question');
+
+        let noCount = 0;
+        let yesSize = 1;
+        let noScale = 1;
+
+        // Gifs for different states
+        const sadGifs = [
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif"
+        ];
+        const happyGif = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif";
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('click', moveButton);
+
+        function moveButton() {
+            noCount++;
+            
+            // Move No button to a random spot
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+
+            // Change UI scale
+            yesSize += 0.2;
+            noScale -= 0.1;
+            yesBtn.style.transform = `scale(${yesSize})`;
+            if (noScale > 0.3) noBtn.style.transform = `scale(${noScale})`;
+
+            // Change Character to sad
+            character.src = sadGifs[Math.floor(Math.random() * sadGifs.length)];
+        }
+
+        yesBtn.addEventListener('click', () => {
+            document.body.innerHTML = `
+                <div style="text-align:center;">
+                    <img src="${happyGif}" style="width:300px; border-radius:20px;">
+                    <h1 style="color:#d63384; font-size: 3rem;">YEAHHH LET'S GOOO! 🥳</h1>
+                    <p>I knew you couldn't resist!</p>
+                </div>
+            `;
+            document.body.style.backgroundColor = "#fff";
+        });
+    </script>
+</body>
+</html>
