@@ -28,7 +28,7 @@
             font-size: 2rem;
             margin-bottom: 20px;
             padding: 0 15px;
-            min-height: 80px; /* Space for text changes */
+            min-height: 80px;
         }
 
         #character-img {
@@ -61,14 +61,14 @@
             background-color: #b2e4b3;
             color: #2e5c2f;
             position: relative;
-            z-index: 1; /* Lower layer */
+            z-index: 1; 
         }
 
         #no-btn {
             background-color: #f1a7c1;
             color: #7a2e45;
             position: relative;
-            z-index: 9999; /* ALWAYS ON TOP */
+            z-index: 9999; /* Always on top */
         }
 
         .success-view {
@@ -116,40 +116,40 @@
             "Don't do this to me... 💔",
             "I'm gonna cry! 0_0",
             "You're heartless! 😂",
-            "STOOOOP CLICKING NO!"
+            "It's getting harder to click, isn't it?",
+            "Just give up and say yes! ✨"
         ];
 
         noBtn.addEventListener('click', () => {
             clickCount++;
 
-            // 1. Update text based on click count
+            // 1. Update text
             if (clickCount < messages.length) {
                 questionText.innerText = messages[clickCount];
             } else {
-                questionText.innerText = "Just say YES already! 😤";
+                questionText.innerText = "Okay, now you're just being mean! 😤";
             }
 
-            // 2. Change to sad image
+            // 2. Change image
             characterImg.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif";
 
-            // 3. Grow Yes, Shrink No (minimum 50% size)
+            // 3. Grow Yes / Shrink No (No limit)
             yesScale += 0.4;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            if (noScale > 0.5) {
-                noScale -= 0.1;
-                noBtn.style.transform = `scale(${noScale})`;
-            }
+            noScale -= 0.15; // Shrinks faster now
+            noBtn.style.transform = `scale(${noScale})`;
 
-            // 4. Move No button randomly within viewport
+            // 4. Move No button randomly
             noBtn.style.position = 'fixed';
             
-            const padding = 30;
+            const padding = 50;
             const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
             const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
 
-            const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
-            const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
+            // Math.max(0, ...) ensures it doesn't go off the top/left if screen is small
+            const randomX = Math.max(0, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(0, Math.floor(Math.random() * maxHeight));
 
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
