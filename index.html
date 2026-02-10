@@ -14,37 +14,38 @@
             background-color: #ffe0e9;
             font-family: 'Arial', sans-serif;
             margin: 0;
-            overflow: hidden; /* Prevents scrollbars when button moves */
+            text-align: center;
         }
-        #character { width: 200px; height: 200px; margin-bottom: 20px; border-radius: 20px; }
-        h1 { color: #d63384; min-height: 60px; padding: 0 20px; }
+        #character { width: 220px; height: 220px; margin-bottom: 10px; border-radius: 20px; }
+        h1 { color: #d63384; margin-bottom: 30px; }
         
         .buttons-container { 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            gap: 20px; 
+            gap: 25px; /* Spacing between buttons */
+            height: 100px; 
             width: 100%;
-            height: 50px;
+            position: relative; 
         }
         
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 35px;
+            font-size: 1.3rem;
             border: none;
-            border-radius: 12px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             transition: transform 0.2s ease;
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; }
-        #noBtn { background-color: #888; color: white; }
+        #yesBtn { background-color: #b2e4b3; color: white; z-index: 10; }
+        #noBtn { background-color: #f1a7c1; color: white; transition: none; }
     </style>
 </head>
 <body>
 
-    <img id="character" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif">
+    <img id="character" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute character">
     <h1 id="question">Will you be my Valentine? 💖</h1>
     
     <div class="buttons-container">
@@ -56,52 +57,53 @@
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const character = document.getElementById('character');
-        const question = document.getElementById('question');
 
-        let noClickCount = 0;
+        let noCount = 0;
         let yesScale = 1;
 
-        // Sad messages to guilt-trip them
-        const messages = [
-            "Will you be my Valentine?",
-            "Are you sure?? 🥺",
-            "Pleease reconsider! 😭",
-            "You're breaking my heart... 💔",
-            "I'm gonna cry! 0_0"
+        const sadGifs = [
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif"
         ];
+        const happyGif = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif";
 
         noBtn.addEventListener('click', () => {
-            noClickCount++;
+            noCount++;
             
-            // 1. Change the text and image
-            question.innerText = messages[Math.min(noClickCount, messages.length - 1)];
-            character.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif";
+            // 1. Make the "No" button move to a random position
+            // After the first click, it becomes absolute so it can fly anywhere
+            noBtn.style.position = 'absolute';
+            
+            // Ensure it stays within the visible screen area
+            const padding = 50;
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+            
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
 
-            // 2. Grow the Yes button
-            yesScale += 0.4;
+            // 2. Shrink No, Grow Yes
+            yesScale += 0.3;
             yesBtn.style.transform = `scale(${yesScale})`;
-
-            // 3. Move the No button to a random position
-            noBtn.style.position = 'fixed'; // Switches from row to floating
             
-            const padding = 100;
-            const randomX = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding) + (padding/2);
-            const randomY = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding) + (padding/2);
-            
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
+            let currentNoScale = 1 - (noCount * 0.1);
+            if (currentNoScale > 0.2) {
+                noBtn.style.transform = `scale(${currentNoScale})`;
+            }
 
-            // 4. Shrink the No button
-            let noScale = Math.max(0.3, 1 - (noClickCount * 0.15));
-            noBtn.style.transform = `scale(${noScale})`;
+            // 3. Update Character to sad version
+            character.src = sadGifs[noCount % sadGifs.length];
         });
 
         yesBtn.addEventListener('click', () => {
             document.body.innerHTML = `
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif" style="width:300px; border-radius:20px;">
-                <h1 style="color:#d63384; font-size: 3rem;">YEEESSSS! 💖✨</h1>
-                <p style="font-size: 1.5rem;">The only right answer!</p>
+                <div style="text-align:center;">
+                    <img src="${happyGif}" style="width:300px; border-radius:20px;">
+                    <h1 style="color:#d63384; font-size: 3rem;">YAAAY! I KNEW IT! ❤️</h1>
+                    <p style="font-size: 1.5rem;">Best Valentine ever!</p>
+                </div>
             `;
+            document.body.style.backgroundColor = "#fff";
         });
     </script>
 </body>
