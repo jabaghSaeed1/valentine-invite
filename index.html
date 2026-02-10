@@ -14,29 +14,28 @@
             background-color: #fdf2f8;
             font-family: 'Arial', sans-serif;
             overflow: hidden;
+            text-align: center;
         }
 
         .container {
-            text-align: center;
             position: relative;
             width: 100%;
             max-width: 500px;
+        }
+
+        /* Using a Large Emoji instead of a GIF to prevent "Content Not Available" */
+        #character-emoji {
+            font-size: 100px;
+            display: block;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
 
         h1 {
             color: #d63384;
             font-size: 2rem;
             margin-bottom: 20px;
-            padding: 0 15px;
             min-height: 80px;
-        }
-
-        #character-img {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            border-radius: 20px;
-            margin-bottom: 20px;
         }
 
         .btn-container {
@@ -68,21 +67,32 @@
             background-color: #f1a7c1;
             color: #7a2e45;
             position: relative;
-            z-index: 9999; /* Always on top */
+            z-index: 9999;
         }
 
         .success-view {
             display: none;
             flex-direction: column;
             align-items: center;
-            text-align: center;
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: #ff4d6d;
+            font-size: 20px;
+            animation: float 3s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) opacity(1); }
+            100% { transform: translateY(-100vh) opacity(0); }
         }
     </style>
 </head>
 <body>
 
     <div class="container" id="main-ui">
-        <img id="character-img" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif">
+        <div id="character-emoji">😊</div>
         <h1 id="question">Will you be my Valentine?</h1>
         
         <div class="btn-container">
@@ -92,7 +102,7 @@
     </div>
 
     <div class="success-view" id="success-ui">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif" style="width: 280px; border-radius: 20px;">
+        <div style="font-size: 120px;">🥰</div>
         <h1 style="color: #d63384; font-size: 3rem; margin-bottom: 10px;">YEAHHH LET'S GOOO! ❤️</h1>
         <p style="font-size: 1.5rem; color: #7a2e45;">I never doubted you for a second! 😘</p>
     </div>
@@ -101,7 +111,7 @@
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
         const questionText = document.getElementById('question');
-        const characterImg = document.getElementById('character-img');
+        const emoji = document.getElementById('character-emoji');
         const mainUi = document.getElementById('main-ui');
         const successUi = document.getElementById('success-ui');
 
@@ -120,46 +130,55 @@
             "Almost gone... just click YES! ✨"
         ];
 
+        const sadEmojis = ["😟", "🥺", "😭", "💔", "😿", "🥀"];
+
         noBtn.addEventListener('click', () => {
             clickCount++;
 
             // 1. Update text
-            if (clickCount < messages.length) {
-                questionText.innerText = messages[clickCount];
-            } else {
-                questionText.innerText = "Okay, it's basically a grain of sand now. 😤";
-            }
+            questionText.innerText = messages[Math.min(clickCount, messages.length - 1)];
 
-            // 2. Change image
-            characterImg.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif";
+            // 2. Change Emoji (No more broken links!)
+            emoji.innerText = sadEmojis[Math.min(clickCount - 1, sadEmojis.length - 1)];
 
-            // 3. Grow Yes / Shrink No
+            // 3. Scale logic
             yesScale += 0.4;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            // FIX: Ensure noScale never goes below 0.05 so it doesn't flip/get bigger
+            // Corrected shrinking logic to prevent flipping
             noScale = Math.max(0.05, noScale - 0.15); 
             noBtn.style.transform = `scale(${noScale})`;
 
-            // 4. Move No button randomly
+            // 4. Move No button
             noBtn.style.position = 'fixed';
-            
             const padding = 50;
             const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
             const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
 
-            const randomX = Math.max(0, Math.floor(Math.random() * maxWidth));
-            const randomY = Math.max(0, Math.floor(Math.random() * maxHeight));
-
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
+            noBtn.style.left = Math.max(0, Math.floor(Math.random() * maxWidth)) + 'px';
+            noBtn.style.top = Math.max(0, Math.floor(Math.random() * maxHeight)) + 'px';
         });
 
         yesBtn.addEventListener('click', () => {
             mainUi.style.display = 'none';
             successUi.style.display = 'flex';
             document.body.style.backgroundColor = "#fff";
+            
+            // Bonus: Simple Heart Rain
+            for(let i=0; i<20; i++) {
+                createHeart();
+            }
         });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerText = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
     </script>
 </body>
 </html>
