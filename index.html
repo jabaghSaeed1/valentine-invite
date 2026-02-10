@@ -2,48 +2,178 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine?</title>
     <style>
         body {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
-            background-color: #ffe0e9;
-            font-family: 'Arial', sans-serif;
             margin: 0;
-            overflow: hidden; /* Strictly no scrolling */
-            position: relative;
-        }
-        #character { width: 180px; height: 180px; margin-bottom: 10px; border-radius: 20px; object-fit: contain; }
-        h1 { color: #d63384; margin: 20px; text-align: center; font-size: 1.8rem; }
-        
-        .buttons-container { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 20px; 
-            width: 100%;
-            height: 60px;
-        }
-        
-        button {
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s ease;
-            white-space: nowrap;
+            background-color: #fdf2f8; /* Light pink background */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden; /* Prevents scrolling */
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; position: relative; z-index: 100; }
-        #noBtn { background-color: #888; color: white; position: relative; z-index: 100; }
+        .container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        #character-img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px; /* Spacing between buttons */
+            height: 60px; /* Reserve height so layout doesn't jump */
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* User Specified Colors */
+        #yes-btn {
+            background-color: #b2e4b3; /* Greenish */
+            color: #2e5c2f; /* Darker green text for readability */
+        }
+
+        #no-btn {
+            background-color: #f1a7c1; /* Pinkish */
+            color: #7a2e45; /* Darker pink text for readability */
+        }
+
+        /* Success Message Styling */
+        .success-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
 
-    <img id="character" src="
+    <div class="container" id="main-container">
+        <img id="character-img" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute Bear">
+        <h1 id="question-text">Will you be my Valentine?</h1>
+        
+        <div class="btn-container">
+            <button class="btn" id="yes-btn">Yes</button>
+            <button class="btn" id="no-btn">No</button>
+        </div>
+    </div>
+
+    <div class="success-message" id="success-container">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26vUxArWpRAHwOQ8/giphy.gif" alt="Happy Bear" style="width: 300px; border-radius: 20px;">
+        <h1 style="color: #d63384; font-size: 3rem; margin-top: 20px;">YEAHHH LET'S GOOO! ❤️</h1>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const questionText = document.getElementById('question-text');
+        const characterImg = document.getElementById('character-img');
+        const mainContainer = document.getElementById('main-container');
+        const successContainer = document.getElementById('success-container');
+
+        // State variables
+        let clickCount = 0;
+        let yesScale = 1;
+        let noScale = 1;
+
+        // Arrays for dynamic content
+        const sadGifs = [
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNqZzR4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/cLS1cfxvGOPVpf9g3y/giphy.gif"
+        ];
+
+        const rejectMessages = [
+            "No?",
+            "Are you sure?",
+            "Really sure?",
+            "Pookie please...",
+            "Just think about it!",
+            "If you say no, I will be very sad...",
+            "I will be very very very sad...",
+            "Ok fine, I will stop asking...",
+            "Just kidding, say yes please! ❤️"
+        ];
+
+        // LOGIC FOR NO BUTTON
+        noBtn.addEventListener('click', () => {
+            clickCount++;
+            
+            // 1. Change Text
+            if (clickCount < rejectMessages.length) {
+                noBtn.innerText = rejectMessages[clickCount];
+            }
+
+            // 2. Change Image to Sad
+            characterImg.src = sadGifs[clickCount % sadGifs.length];
+
+            // 3. Scale Buttons
+            yesScale += 0.2; // Yes grows
+            noScale -= 0.1;  // No shrinks
+            
+            yesBtn.style.transform = `scale(${yesScale})`;
+            
+            // Prevent No button from disappearing completely (stop at 0.5 scale)
+            if (noScale < 0.5) noScale = 0.5;
+            noBtn.style.transform = `scale(${noScale})`;
+
+            // 4. Move Button Randomly (The "Trap")
+            // Make position absolute so it breaks out of the row
+            noBtn.style.position = "absolute";
+            
+            // Calculate available screen space (viewport) - button dimensions
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+        });
+
+        // LOGIC FOR YES BUTTON
+        yesBtn.addEventListener('click', () => {
+            // Hide the game container
+            mainContainer.style.display = "none";
+            // Show the success message
+            successContainer.style.display = "flex";
+        });
+
+    </script>
+</body>
+</html>
