@@ -13,7 +13,7 @@
             margin: 0;
             background-color: #fdf2f8;
             font-family: 'Arial', sans-serif;
-            overflow: hidden; /* Prevents scrollbars */
+            overflow: hidden;
         }
 
         .container {
@@ -28,6 +28,7 @@
             font-size: 2rem;
             margin-bottom: 20px;
             padding: 0 15px;
+            min-height: 80px; /* Space for text changes */
         }
 
         #character-img {
@@ -56,23 +57,25 @@
             transition: transform 0.2s ease;
         }
 
-        /* Your Specific Colors */
         #yes-btn {
             background-color: #b2e4b3;
             color: #2e5c2f;
-            z-index: 999; /* Keeps Yes button on top */
+            position: relative;
+            z-index: 1; /* Lower layer */
         }
 
         #no-btn {
             background-color: #f1a7c1;
             color: #7a2e45;
             position: relative;
+            z-index: 9999; /* ALWAYS ON TOP */
         }
 
         .success-view {
             display: none;
             flex-direction: column;
             align-items: center;
+            text-align: center;
         }
     </style>
 </head>
@@ -97,31 +100,51 @@
     <script>
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
+        const questionText = document.getElementById('question');
         const characterImg = document.getElementById('character-img');
         const mainUi = document.getElementById('main-ui');
         const successUi = document.getElementById('success-ui');
 
         let yesScale = 1;
         let noScale = 1;
+        let clickCount = 0;
+
+        const messages = [
+            "Will you be my Valentine?",
+            "Are you sure? 🥺",
+            "Pookie please! 😭",
+            "Don't do this to me... 💔",
+            "I'm gonna cry! 0_0",
+            "You're heartless! 😂",
+            "STOOOOP CLICKING NO!"
+        ];
 
         noBtn.addEventListener('click', () => {
-            // 1. Change to sad image
+            clickCount++;
+
+            // 1. Update text based on click count
+            if (clickCount < messages.length) {
+                questionText.innerText = messages[clickCount];
+            } else {
+                questionText.innerText = "Just say YES already! 😤";
+            }
+
+            // 2. Change to sad image
             characterImg.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZidmR6eXN0bmZ4bmZ6eHpsbmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/OPU6wUKARAOztu6Tu4/giphy.gif";
 
-            // 2. Grow Yes, Shrink No (with a limit)
-            yesScale += 0.3;
+            // 3. Grow Yes, Shrink No (minimum 50% size)
+            yesScale += 0.4;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            if (noScale > 0.6) { // Won't shrink smaller than 60% of original size
+            if (noScale > 0.5) {
                 noScale -= 0.1;
                 noBtn.style.transform = `scale(${noScale})`;
             }
 
-            // 3. Move No button randomly within viewport
+            // 4. Move No button randomly within viewport
             noBtn.style.position = 'fixed';
             
-            // Subtract button dimensions and some padding so it never hits the absolute edge
-            const padding = 20;
+            const padding = 30;
             const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
             const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
 
