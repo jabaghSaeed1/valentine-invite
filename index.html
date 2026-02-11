@@ -37,7 +37,6 @@
             bottom: -50px;
         }
 
-        /* Create different paths for flowers so they don't look robotic */
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
             10% { opacity: 0.3; }
@@ -68,6 +67,13 @@
 
         .btn-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .row {
+            display: flex;
             justify-content: center;
             align-items: center;
             gap: 20px;
@@ -93,7 +99,14 @@
         #no-btn {
             background-color: #f1a7c1;
             color: #7a2e45;
-            z-index: 9999; /* Locked on top */
+            z-index: 9999; 
+        }
+
+        .subtext {
+            color: #d63384;
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.8;
         }
 
         .success-view {
@@ -106,16 +119,18 @@
 </head>
 <body>
 
-    <div class="bg-container" id="bg-flowers">
-        </div>
+    <div class="bg-container" id="bg-flowers"></div>
 
     <div class="container" id="main-ui">
         <div id="character-emoji">😊</div>
         <h1 id="question">Will you be my Valentine?</h1>
         
         <div class="btn-container">
-            <button class="btn" id="yes-btn">Yes</button>
-            <button class="btn" id="no-btn">No</button>
+            <div class="row">
+                <button class="btn" id="yes-btn">Yes</button>
+                <button class="btn" id="no-btn">No</button>
+            </div>
+            <p class="subtext" id="warning-text">Choose wisely.. 😏😉</p>
         </div>
     </div>
 
@@ -150,26 +165,18 @@
             "Almost gone... just click YES! ✨"
         ];
 
-        const sadEmojis = ["😟", "🥺", "😭", "😠", "😿", "☹️", "😎"];
+        const sadEmojis = ["😟", "🥺", "😭", "😠", "😿", "☹️"];
         const flowerIcons = ["🌸", "❤️", "🌹", "✨", "💖"];
 
-        // Fixed Flower Generation
         function initFlowers() {
             for (let i = 0; i < 20; i++) {
                 const flower = document.createElement('div');
                 flower.classList.add('flower');
                 flower.innerText = flowerIcons[Math.floor(Math.random() * flowerIcons.length)];
-                
-                // Randomize horizontal start
                 flower.style.left = Math.random() * 100 + 'vw';
-                
-                // Randomize animation speed
                 const duration = Math.random() * 5 + 10;
                 flower.style.animationDuration = duration + 's';
-                
-                // OFFSET: This makes them start at different heights so they aren't static
                 flower.style.animationDelay = -(Math.random() * duration) + 's';
-                
                 bgContainer.appendChild(flower);
             }
         }
@@ -177,12 +184,12 @@
 
         noBtn.addEventListener('click', () => {
             clickCount++;
+            
             questionText.innerText = messages[Math.min(clickCount, messages.length - 1)];
             emoji.innerText = sadEmojis[Math.min(clickCount - 1, sadEmojis.length - 1)];
 
             yesScale += 0.4;
             yesBtn.style.transform = `scale(${yesScale})`;
-            
             noScale = Math.max(0.01, noScale - 0.12);
             noBtn.style.transform = `scale(${noScale})`;
 
@@ -203,6 +210,3 @@
     </script>
 </body>
 </html>
-
-
-
